@@ -1,4 +1,6 @@
-clients = 'Pablo,Ricardo,'
+import sys
+
+clients = ['Pablo','Ricardo']
 
 # Welcome Message
 def _print_welcome():
@@ -13,19 +15,10 @@ def _print_welcome():
 
 
 # Utils
-def list_clients():
-	global clients
-	print(clients)
-
-
-def _add_comma():
-	global clients
-	clients += ','
-
-
 def _get_client_name():
 	client_name = input('What is the client name? ')
 	client_name = client_name.capitalize()
+
 	return client_name
 
 
@@ -34,10 +27,14 @@ def create_client(client_name):
 	global clients
 
 	if client_name not in clients:
-		clients += client_name
-		_add_comma()
+		clients.append(client_name)
 	else:
 		print('Client already is in the clients list')
+
+
+def list_clients():
+	for idx, client in enumerate(clients):
+		print(f'{idx}: {client}')
 
 
 def update_client(client_name):
@@ -45,7 +42,8 @@ def update_client(client_name):
 
 	if client_name in clients:
 		update_client_name = input('What is the updated client name? ')
-		clients = clients.replace(client_name, update_client_name)
+		index = clients.index(client_name)
+		clients[index] = update_client_name
 	else:
 		print(f'{client_name} is not in clients list')
 
@@ -54,17 +52,13 @@ def delete_client(client_name):
 	global clients
 
 	if client_name in clients:
-		clients = clients.replace(client_name + ',', '')
+		clients.remove(client_name)
 	else:
 		print(f'{client_name} is not in clients list')
 
 
 def search_client(client_name):
-	global clients
-
-	clients_list = clients.split(',')
-
-	for client in clients_list:
+	for client in clients:
 		if client != client_name:
 			continue
 		else:
