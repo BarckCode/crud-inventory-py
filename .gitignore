@@ -1,2 +1,9 @@
 # Local history:
 .history
+
+# Virtual Env:
+venv
+pv.egg-info
+
+# Cache:
+*pycache*
