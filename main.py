@@ -1,33 +1,31 @@
-import sys
+import csv
+import os
 
-clients = [
-	{
-		'name': 'Pablo',
-		'company': 'Google',
-		'email': 'pablo@google.com',
-		'position': 'Frontend Engineer',
-	},
-	{
-		'name': 'Ricardo',
-		'company': 'Google',
-		'email': 'ricardo@google.com',
-		'position': 'Backend Engineer',
-	},
-]
-
-# Welcome Message
-def _print_welcome():
-	print('WELCOME TO PLATZI VENTAS')
-	print('*' * 50)
-	print('What would you like to do today?')
-	print('[C]reate client')
-	print('[R]ead clients list')
-	print('[U]pdate client')
-	print('[D]elete client')
-	print('[S]earch client')
+CLIENT_TABLE = '.clients.csv'
+CLIENT_SCHEMA = ['name', 'company', 'email', 'position']
+clients = []
 
 
-# Utils
+# Storage:
+def _initialize_clients_from_storage():
+	with open(CLIENT_TABLE, mode='r') as f:
+		reader = csv.DictReader(f, fieldnames = CLIENT_SCHEMA)
+
+		for row in reader:
+			clients.append(row)
+
+
+def _save_clients_to_storage():
+	tmp_table_name = f'{CLIENT_TABLE}.tmp'
+	with open(tmp_table_name, mode='w') as f:
+		writer = csv.DictWriter(f, fieldnames = CLIENT_SCHEMA)
+		writer.writerows(clients)
+
+		os.remove(CLIENT_TABLE)
+		os.rename(tmp_table_name, CLIENT_TABLE)
+
+
+# Utils:
 def _get_client_field(field):
 	client = input(f'What is the client {field}? ')
 
@@ -45,7 +43,7 @@ def _get_client_from_user():
     return client
 
 
-# Actions
+# Actions:
 def create_client(client_name):
 	global clients
 
@@ -82,6 +80,7 @@ def delete_client(client_id):
 			del clients[uid]
 			break
 
+
 def search_client(client_name):
 	for client in clients:
 		if client['name'] != client_name:
@@ -90,8 +89,21 @@ def search_client(client_name):
 			return True
 
 
-# Entry Program
+# Welcome Message:
+def _print_welcome():
+	print('WELCOME TO PLATZI VENTAS')
+	print('*' * 50)
+	print('What would you like to do today?')
+	print('[C]reate client')
+	print('[R]ead clients list')
+	print('[U]pdate client')
+	print('[D]elete client')
+	print('[S]earch client')
+
+
+# Entry Program:
 if __name__ == '__main__':
+	_initialize_clients_from_storage()
 	_print_welcome()
 
 	command = input('Select option: ')
@@ -130,3 +142,5 @@ if __name__ == '__main__':
 			print(f'The client {client_name} is not in our clients list')
 	else:
 		print('Invalid option')
+
+	_save_clients_to_storage()
